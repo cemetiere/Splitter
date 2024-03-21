@@ -1,0 +1,88 @@
+@mixin panel-header{
+    text-align: center;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+@mixin SPItems{
+    .SplitterPanelHeader{
+        height: 40px;
+        border-bottom: 1px solid #e0e0e0;
+        @include panel-header;
+    }
+    .SplitterPanelContent{
+        width: 100%;
+        height: 100%;
+        overflow: scroll;
+    }
+
+    .SplitterPanelContentHidden{
+        display: none;
+    }
+    .SplitterPanelHeaderHidden{
+        @include panel-header;
+
+        height: 100%;
+    }
+    .HeaderText{
+        color: #565656;
+    }
+    .HeaderTextHidden{
+        writing-mode: vertical-lr;
+        color: #565656;
+    }
+}
+
+.SplitterPanel{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    @include SPItems
+}
+.SplitterPanelHidden{
+    @include SPItems
+}
+
+@mixin SPVerticalItems{
+    .SplitterPanelHeader{
+        border-right: 1px solid #e0e0e0;
+        @include panel-header;
+        width: 40px;
+        height: 100%;
+    }
+    .SplitterPanelContent{
+        width: 100%;
+        height: 100%;
+        overflow: scroll;
+    }
+
+    .SplitterPanelContentHidden{
+        display: none;
+    }
+    .SplitterPanelHeaderHidden{
+        @include panel-header;
+        height: 40px;
+    }
+    .HeaderTextHidden{
+        writing-mode: horizontal-tb;
+        color: #565656;
+    }
+    .HeaderText{
+        writing-mode: vertical-lr;
+        color: #565656;
+    }
+}
+.SplitterPanelVertical{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    @include SPVerticalItems
+}
+.SplitterPanelVerticalHidden{
+    @include SPVerticalItems;
+
+}
+
+
+

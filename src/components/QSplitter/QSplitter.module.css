@@ -1,0 +1,10 @@
+.QSplitter{
+    display: flex;
+    border: 1px solid #e1e1e1;
+}
+.QSplitterVertical{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e1e1e1;
+    overflow: hidden;
+}
