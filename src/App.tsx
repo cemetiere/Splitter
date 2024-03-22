@@ -6,9 +6,14 @@ import QSplitter from "./components/QSplitter/QSplitter";
 function App() {
   return (
     <div className="App">
-      <QSplitter align={'vertical'} height={'259px'} width={'932px'} headers={['first', 'second', 'third']}>
+      <QSplitter align={'horizontal'} height={'500px'} width={'1000px'} headers={['first', 'second', 'third', 'fourth']}>
 
-          <div></div>
+
+          <QSplitter align={'vertical'} height={'100%'} width={'100%'} headers={['first', 'second', 'third', 'fourth']}>
+              <div></div>
+              <div></div>
+              <div></div>
+          </QSplitter>
           <div></div>
           <div>
               <div style={{height: '100px'}}>11</div>

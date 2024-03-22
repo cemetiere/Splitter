@@ -5,31 +5,13 @@ interface SplitterPanelProps{
     align: string,
     headerText: string,
     size: number,
+    hidden: boolean,
     children: React.ReactNode,
 }
-export interface PanelRefType{
-    hide: ()=>void,
-    show: ()=>void
-}
-function SplitterPanel(props: SplitterPanelProps, ref: Ref<PanelRefType>) {
-    const [hidden, setHidden] = useState(false);
-    useEffect(() => {
-        if (props.size <= 5) {
-            setHidden(true)
-        }
-        if (props.size > 5) {
-            setHidden(false)
-        }
-    }, [props.size]);
 
-    const hide = () => {
-        setHidden(true)
-    }
-    const show = () => {
-        setHidden(false)
-    }
+function SplitterPanel(props: SplitterPanelProps) {
+    const hidden = props.hidden;
 
-    useImperativeHandle(ref, () => ({hide, show}))
     return props.align === 'vertical' ?
         <div className={hidden?styles.SplitterPanelVerticalHidden:styles.SplitterPanelVertical}
              style={{height: `${props.size}%`}}>
@@ -49,4 +31,4 @@ function SplitterPanel(props: SplitterPanelProps, ref: Ref<PanelRefType>) {
 
 }
 
-export default forwardRef(SplitterPanel);
+export default SplitterPanel;
