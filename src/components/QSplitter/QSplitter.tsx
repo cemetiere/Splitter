@@ -93,31 +93,31 @@ function QSplitter(props: QSplitterProps) {
             if(tempSizes[baseRightIndex]<=minSize) {
                 let i = 1;
                 while (rightPanelIndex != tempSizes.length - 1) {
+                    if (tempSizes[rightPanelIndex] > minSize) break;
                     rightPanelIndex = baseRightIndex + i;
                     i++;
-                    if (tempSizes[rightPanelIndex] > minSize) break;
                 }
-                isRight = true;
-            }
-            if(coordinate<previousCoordinate){
-                rightPanelIndex = baseRightIndex
 
+            }
+            if(coordinate<=previousCoordinate){
+                rightPanelIndex = baseRightIndex
+                isRight = false;
             }
 
 
             if(tempSizes[baseLeftIndex]<=minSize) {
                 let i = 1;
                 while (leftPanelIndex != 0) {
+                    if (tempSizes[leftPanelIndex] > minSize) break;
                     leftPanelIndex = baseLeftIndex - i;
                     i++;
-                    if (tempSizes[leftPanelIndex] > minSize) break;
                 }
-                isRight = false;
+
             }
             if(coordinate>previousCoordinate){
                 leftPanelIndex = baseLeftIndex
+                isRight = true;
             }
-
 
 
             let leftSum: number = 0;
@@ -130,7 +130,6 @@ function QSplitter(props: QSplitterProps) {
                 leftSum+=tempSizes[i];
                 leftCount++;
             }
-            // console.log(hiddenPanels)
             for(let i = leftPanelIndex+1; i<rightPanelIndex; i++){
                 middleSum+=tempSizes[i];
                 middleCount++;
@@ -145,19 +144,23 @@ function QSplitter(props: QSplitterProps) {
             const offset = props.align==='vertical'?thisComponent.current?.offsetTop:thisComponent.current?.offsetLeft
 
             if(realSize && offset!=undefined){
+
+                // calculating percents
                 let percent: number;
                 if(!isRight){
                     percent = (coordinate-offset-(leftCount+middleCount)*BAR_SIZE/2-realSize*(leftSum+middleSum)/100)/(realSize)*100;
                 } else {
                     percent = (coordinate-offset-(leftCount)*BAR_SIZE/2-realSize*(leftSum)/100)/(realSize)*100;
+
                 }
-                let minCoordinate = isRight?
-                    HIDDEN_PANEL_SIZE+offset+(leftCount+middleCount)*BAR_SIZE/2+(realSize*(leftSum+middleSum)/100):
-                    HIDDEN_PANEL_SIZE+offset+(leftCount)*BAR_SIZE/2+(realSize*(leftSum)/100)
+                let minCoordinate = modifiedHiddenPanels[baseRightIndex]?
+                    HIDDEN_PANEL_SIZE+offset+(leftCount)*BAR_SIZE/2+(realSize*(leftSum)/100):
+                    HIDDEN_PANEL_SIZE+offset+(leftCount+middleCount)*BAR_SIZE/2+(realSize*(leftSum+middleSum)/100);
+                let maxCoordinate = modifiedHiddenPanels[baseLeftIndex]?
+                    realSize+offset-HIDDEN_PANEL_SIZE-(realSize*(rightSum)/100):
+                    realSize+offset-HIDDEN_PANEL_SIZE-(realSize*(rightSum+middleSum)/100)
 
-
-                if((coordinate>minCoordinate) && (coordinate<realSize+offset-HIDDEN_PANEL_SIZE-(realSize*(rightSum+middleSum)/100))){
-
+                if((coordinate>minCoordinate) && (coordinate<maxCoordinate)){
                     tempSizes = tempSizes.map((s,i)=>{
                         if(i==leftPanelIndex) {
                             return percent
@@ -169,40 +172,31 @@ function QSplitter(props: QSplitterProps) {
                     })
                     setSizes(tempSizes)
                 }
-                if(coordinate<=HIDDEN_PANEL_SIZE+offset+(leftCount+middleCount)*BAR_SIZE+(realSize*(leftSum+middleSum)/100)){
+
+                // hiding panels
+                if(coordinate<=minCoordinate && !modifiedHiddenPanels[leftPanelIndex]){
                     tempSizes = hideLeftPanel(tempSizes, leftPanelIndex,rightPanelIndex)
+                    modifiedHiddenPanels[leftPanelIndex] = true
                 }
-                else if(coordinate>realSize+offset-HIDDEN_PANEL_SIZE*(rightCount+middleCount)-(realSize*(rightSum+middleSum)/100)){
+                else if(coordinate>maxCoordinate && !modifiedHiddenPanels[rightPanelIndex]){
+
                     tempSizes =hideRightPanel(tempSizes,leftPanelIndex,rightPanelIndex)
+                    modifiedHiddenPanels[rightPanelIndex] = true
                 }
                 else {
-
-                    // let modifiedHiddenPanels = hiddenPanels.map((p, i)=>{
-                    //     if(i==leftPanelIndex){
-                    //         return false;
-                    //     } else if (i==rightPanelIndex) {
-                    //         return false;
-                    //     } else {
-                    //         return p;
-                    //     }
-                    // })
-                    // setHiddenPanels(modifiedHiddenPanels)
-
                     tempSizes.forEach((v, i)=>{
                         if(v>minSize) {
-                            console.log(i)
                             modifiedHiddenPanels[i] = false
                         }
 
                     })
                     setHiddenPanels(modifiedHiddenPanels)
-                    console.log(hiddenPanels)
+
                 }
             }
             previousCoordinate = coordinate;
         }
         function onMouseMove(event:any){
-            event.stopPropagation()
             props.align==='vertical'?moveAt(event.pageY):moveAt(event.pageX);
         }
 
@@ -221,12 +215,12 @@ function QSplitter(props: QSplitterProps) {
         if(index!=childrenArray.length-1){
             return (
                 <>
-                    <SplitterPanel minSize={minSize} align={props.align} size={sizes[index]} hidden={hiddenPanels[index]}  headerText={props.headers[index]}>{panel}</SplitterPanel>
+                    <SplitterPanel  align={props.align} size={sizes[index]} hidden={hiddenPanels[index]}  headerText={props.headers[index]}>{panel}</SplitterPanel>
                     <SplitterBar align={props.align} leftClick={()=>hideLeftPanel(sizes, index, index+1)} rightClick={()=>hideRightPanel(sizes, index, index+1)} onMouseDown={(e:any)=>moveSplitterBar(e, index,index+1)}/>
                 </>
             )
         } else {
-            return (<SplitterPanel minSize={minSize} align={props.align} size={sizes[index]} hidden={hiddenPanels[index]}  headerText={props.headers[index]}>{panel}</SplitterPanel>)
+            return (<SplitterPanel align={props.align} size={sizes[index]} hidden={hiddenPanels[index]}  headerText={props.headers[index]}>{panel}</SplitterPanel>)
         }
 
     })

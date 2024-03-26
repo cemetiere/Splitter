@@ -8,8 +8,7 @@
     @include SB;
     height: 100%;
     width: 12px;
-    border-left: 1px solid #e1e1e1;
-    border-right: 1px solid #e1e1e1;
+    outline:  1px solid #e1e1e1;
     cursor: col-resize;
 }
 .SplitterBarVertical{
@@ -18,8 +17,7 @@
     flex-direction: row;
     width: 100%;
     cursor: row-resize;
-    border-top: 1px solid #e1e1e1;
-    border-bottom: 1px solid #e1e1e1;
+    outline: 1px solid #e1e1e1;
 }
 
 

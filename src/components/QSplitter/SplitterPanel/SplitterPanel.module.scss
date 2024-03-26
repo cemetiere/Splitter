@@ -8,7 +8,7 @@
 @mixin SPItems{
     .SplitterPanelHeader{
         height: 40px;
-        border-bottom: 1px solid #e0e0e0;
+        outline: 1px solid #e0e0e0;
         @include panel-header;
     }
     .SplitterPanelContent{
@@ -46,7 +46,7 @@
 
 @mixin SPVerticalItems{
     .SplitterPanelHeader{
-        border-right: 1px solid #e0e0e0;
+        outline: 1px solid #e0e0e0;
         @include panel-header;
         width: 40px;
         height: 100%;
